@@ -70,7 +70,7 @@ class BlockchainController {
                         return res.status(500).send("An error happened!");
                     }
                 } catch (error) {
-                    return res.status(500).send(error);
+                    return res.status(500).send(error.toString());
                 }
             } else {
                 return res.status(500).send("Check the Body Parameter!");
@@ -120,12 +120,11 @@ class BlockchainController {
 
     validateChain() {
         this.app.get("/validateChain", async (req, res) => {
-            try {
-                await this.blockchain.validateChain();
+            let errors = await this.blockchain.validateChain();
+            if (errors.length == 0) {
                 res.status(200).send("Chain is valild.");
-            }
-            catch(e) {
-                res.status(500).send("Chain is invalid: " +  e);
+            } else {
+                res.status(500).send("Chain is invalid. " +  errors.length + " errors found.");
             }
         });
     }
